@@ -1,9 +1,11 @@
 const express = require('express')
+
 const cors = require('cors');
 const mongoose  = require('mongoose');
 const bcrypt = require('bcryptjs'); //mã hoá khi gửi lên database
 const User = require('./models/User.js');
-require('dotenv').config()
+require('dotenv').config()//giúp quản lý và tải các biến môi trường từ một file .env và đưa chúng vào trong quá trình thực thi ứng dụng.
+
 const app = express()
 const port = 4000
 
@@ -30,7 +32,9 @@ app.get('/test', (req, res) => {
   res.send('test ok!')
 })
 
+
 //nguyentuanhung123
+//Register
 app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
   try{
@@ -46,6 +50,16 @@ app.post('/register', async (req, res) => {
   }
 });
 
+//Login
+app.post('/login' , async (req, res) => {
+  const {email , password} = req.body;
+  const userDoc = User.findOne({email}); //tìm user trong database 
+  if(userDoc){
+    res.json('found')//view on Network
+  }else{
+    res.json('not found')
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
