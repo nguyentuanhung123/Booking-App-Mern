@@ -15,9 +15,9 @@ const RegisterPage = () => {
                 email,
                 password
             });
-            alert('Registration successfull, Now you can log in')
+            alert('Registration successfull. Now you can log in')
         }catch(e){
-            alert('Registration failed . Please try again later')
+            alert('Registration failed. Please try again later')
         }
     }
 
