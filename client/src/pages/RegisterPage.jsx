@@ -7,13 +7,15 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const registerUser = (e) => {
+    const registerUser = async (e) => {
         e.preventDefault();
-        axios.post('/register',{
+        await axios.post('/register',{
             name,
             email,
             password
         });
+
+        alert('Register successfull, Now you can log in')
     }
 
     return(

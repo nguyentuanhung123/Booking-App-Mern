@@ -1,7 +1,13 @@
 const express = require('express')
 const cors = require('cors');
+const mongoose  = require('mongoose');
+const bcrypt = require('bcryptjs'); //mã hoá khi gửi lên database
+const User = require('./models/User.js');
+require('dotenv').config()
 const app = express()
 const port = 4000
+
+const bcryptSalt = bcrypt.genSaltSync(10);//10 : số vòng được sử dụng để tạo ra salt => tăng độ khó để tránh kỹ thuật tấn công băm mật khẩu
 
 //ta cần phân tích cú pháp json
 app.use(express.json());
@@ -12,6 +18,10 @@ app.use(cors({
   origin: 'http://localhost:5200',
 }))
 
+//console.log("URL mongoose : ",process.env.MONGO_URL);
+//kết nối CSDL
+mongoose.connect(process.env.MONGO_URL);
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -20,10 +30,21 @@ app.get('/test', (req, res) => {
   res.send('test ok!')
 })
 
-app.post('/register', (req, res) => {
+//nguyentuanhung123
+app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
-  res.json({name, email, password});
-})
+  try{
+    const userDoc = await User.create({
+      name,
+      email,
+      password:bcrypt.hashSync(password, bcryptSalt),//đồng bộ hoá băm =>  trả về giá trị băm cuối cùng của mật khẩu
+    });
+    //res.json({name, email, password});
+    res.json(userDoc);
+  }catch(e){
+    res.status(422).json(e); // 422 : lỗi không thể xử lý được
+  }
+});
 
 
 app.listen(port, () => {
