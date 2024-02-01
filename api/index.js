@@ -5,6 +5,7 @@ const mongoose  = require('mongoose');
 const bcrypt = require('bcryptjs'); //mã hoá khi gửi lên database
 const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
+const cookieParser = require('cookie-parser') //phần mềm trung gian để đọc cookie
 require('dotenv').config()//giúp quản lý và tải các biến môi trường từ một file .env và đưa chúng vào trong quá trình thực thi ứng dụng.
 
 const app = express()
@@ -15,6 +16,8 @@ const jwtSecret = 'hvkarbvpWEVBEupivew';// một chuỗi bất kỳ giúp mã ho
 
 //ta cần phân tích cú pháp json
 app.use(express.json());
+// đọc cookie
+app.use(cookieParser());
 
 // link to client
 app.use(cors({
@@ -60,7 +63,10 @@ app.post('/login', async (req, res) => {
     const passOk = bcrypt.compareSync(password, userDoc.password); // Compare hashed password with provided password
     if (passOk) {
       // Generate a JSON Web Token (JWT) if the password is correct
-      jwt.sign({ email: userDoc.email, id: userDoc._id }, jwtSecret, {}, (err, token) => {
+      jwt.sign({ 
+        email: userDoc.email, 
+        id: userDoc._id, 
+      }, jwtSecret, {}, (err, token) => {
         if (err) throw err;
         // Set the JWT as a cookie and respond with 'pass ok'
         res.cookie('token', token).json(userDoc);//View on Response Headers (Set Cookie) , hàm này chủ chạy sau khi frontend chạy xong
@@ -75,7 +81,19 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
+app.get('/profile', (req, res) => {
+  const {token} = req.cookies;
+  if(token){
+    //giải mã
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if(err) throw err; 
+      const {name, email, _id} = await User.findById(userData.id);
+      res.json({name, email, _id});
+    })
+  }else{
+    res.json(null);
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

@@ -11,6 +11,7 @@ axios.defaults.baseURL = 'http://localhost:4000'; // trong trường hợp ở S
 axios.defaults.withCredentials = true; // lưu trữ token vào Cookies trong Application của trình duyệt (ban đầu mới chỉ có ở Response Headers , tức là ta chỉ nhận được token nhưng chưa lưu nó vào Cookies và đăng nhập lần 2 thì sẽ tự động gửi cookíe lên)
 
 const App = () => {
+
   return (
     <UserContextProvider>
       <Routes>
