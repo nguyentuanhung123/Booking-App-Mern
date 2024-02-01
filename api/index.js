@@ -63,7 +63,7 @@ app.post('/login', async (req, res) => {
       jwt.sign({ email: userDoc.email, id: userDoc._id }, jwtSecret, {}, (err, token) => {
         if (err) throw err;
         // Set the JWT as a cookie and respond with 'pass ok'
-        res.cookie('token', token).json('pass ok');//View on Response Headers (Set Cookie) , hàm này chủ chạy sau khi frontend chạy xong
+        res.cookie('token', token).json(userDoc);//View on Response Headers (Set Cookie) , hàm này chủ chạy sau khi frontend chạy xong
       });
     } else {
       // Respond with 'pass not ok' if the password does not match
