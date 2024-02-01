@@ -20,7 +20,7 @@ const App = () => {
           <Route index element={<IndexPage />}></Route>
           <Route path='/login' element={<LoginPage />}></Route>
           <Route path='/register' element={<RegisterPage />}></Route>
-          <Route path='/account' element={<AccountPage />}></Route>
+          <Route path='/account/:subpage?' element={<AccountPage />}></Route>
           <Route path='*' element={<Navigate to="/"/>}></Route>
         </Route>
     </Routes>
