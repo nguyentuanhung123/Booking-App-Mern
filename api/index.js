@@ -5,8 +5,10 @@ const mongoose  = require('mongoose');
 const bcrypt = require('bcryptjs'); //mã hoá khi gửi lên database
 const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
-const cookieParser = require('cookie-parser') //phần mềm trung gian để đọc cookie
-const imageDownloader = require('image-downloader')
+const cookieParser = require('cookie-parser'); //phần mềm trung gian để đọc cookie
+const imageDownloader = require('image-downloader');
+const multer = require('multer');
+const fs = require('fs');
 require('dotenv').config()//giúp quản lý và tải các biến môi trường từ một file .env và đưa chúng vào trong quá trình thực thi ứng dụng.
 
 const app = express()
@@ -103,7 +105,7 @@ app.post('/logout' , (req, res) => {
 })
 
 
-console.log({__dirname});//E:\\document\\MERN STACK\\Booking App\\api
+//console.log({__dirname});//E:\\document\\MERN STACK\\Booking App\\api
 
 app.post('/upload-by-link' , async (req,res) => {
   const {link} = req.body;
@@ -115,8 +117,30 @@ app.post('/upload-by-link' , async (req,res) => {
     url: link,
     dest: __dirname + '\\uploads\\' + newName
   });
-  res.json(newName)
+  res.json(newName)//"photo1706971412264.jpg"
 })
+
+//Dòng này khởi tạo phần mềm trung gian multer, chỉ định thư mục đích cho các tệp đã tải lên là 'uploads/'.
+const photosMiddleware = multer({dest:'uploads\\'}) //Không có dấu gạch chéo vẫn ra
+//Tuyến này xử lý yêu cầu POST tới '/upload' và sử dụng photosMiddleware để xử lý các tệp đã tải lên. Nó yêu cầu các tệp có tên trường 'ảnh' và cho phép tối đa 100 tệp.
+app.post('/upload', photosMiddleware.array('photos', 100),(req, res) => {
+  //console.log("Request files : ", req.files);
+  //bug : những file được tải lên đang là jpeg và không được hỗ trợ mỡ rộng nên phải bổ sung đoạn code bên dưới
+  const uploadedFiles = [];
+  for(let i = 0; i < req.files.length; i++){
+    const {path, originalname} = req.files[i];
+    //path: 'uploads\\9060f25488cd4352614f491b27430268'
+    //originalname: 'Screenshot (15).png'
+    const parts = originalname.split('.');
+    const ext = parts[parts.length - 1];
+    const newPath = path + '.' + ext;
+    //Mã xây dựng một đường dẫn mới bằng cách nối thêm phần mở rộng tệp vào đường dẫn ban đầu và đổi tên tệp bằng fs.renameSync.
+    fs.renameSync(path, newPath);
+    uploadedFiles.push(newPath.replace('uploads\\',''));// bỏ uploads\\ trong đường dẫn đẻ chỉ có tên file ảnh (Example : "2374e424e32013f13386a0e8a558bd60.png")
+  }
+  //res.json(req.files)
+  res.json(uploadedFiles);
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
