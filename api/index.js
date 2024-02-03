@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs'); //mã hoá khi gửi lên database
 const jwt = require('jsonwebtoken');
 const User = require('./models/User.js');
 const cookieParser = require('cookie-parser') //phần mềm trung gian để đọc cookie
+const imageDownloader = require('image-downloader')
 require('dotenv').config()//giúp quản lý và tải các biến môi trường từ một file .env và đưa chúng vào trong quá trình thực thi ứng dụng.
 
 const app = express()
@@ -18,6 +19,8 @@ const jwtSecret = 'hvkarbvpWEVBEupivew';// một chuỗi bất kỳ giúp mã ho
 app.use(express.json());
 // đọc cookie
 app.use(cookieParser());
+// xem ảnh khi có link ảnh
+app.use('/uploads', express.static(__dirname+'/uploads'));//http://localhost:4000/uploads/photo1706931498409.jpg
 
 // link to client
 app.use(cors({
@@ -97,6 +100,22 @@ app.get('/profile', (req, res) => {
 
 app.post('/logout' , (req, res) => {
   res.cookie('token', '').json(true);
+})
+
+
+console.log({__dirname});//E:\\document\\MERN STACK\\Booking App\\api
+
+app.post('/upload-by-link' , async (req,res) => {
+  const {link} = req.body;
+  const newName = 'photo' + Date.now() + '.jpg';
+  // const originalPath = __dirname;
+  // const updatedPath = originalPath.replace(/\\/g, '/');
+
+  await imageDownloader.image({
+    url: link,
+    dest: __dirname + '\\uploads\\' + newName
+  });
+  res.json(newName)
 })
 
 app.listen(port, () => {

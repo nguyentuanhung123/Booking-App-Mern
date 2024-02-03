@@ -19,15 +19,15 @@ const AccountPage = () => {
     if(ready && !user){
         return <Navigate to={'/login'} />
     }
-    // bug : Khi ta refresh thì nó sẽ chuyển đến trang login dù ta đang ở account page 
-    // (Lý do ở context ta đặt user mặc đinh là null và phải mất vài mili giây để cập lại user)
-    // Giải pháp bổ sung ready
+    // // bug : Khi ta refresh thì nó sẽ chuyển đến trang login dù ta đang ở account page 
+    // // (Lý do ở context ta đặt user mặc đinh là null và phải mất vài mili giây để cập lại user)
+    // // Giải pháp bổ sung ready
 
     if(!ready){
         return 'Loading...';
     }
 
-    //console.log("Subpage : ", subpage); mặc định là undifined
+    // //console.log("Subpage : ", subpage); mặc định là undifined
 
     const logout = async () => {
         await axios.post('/logout');
@@ -52,7 +52,7 @@ const AccountPage = () => {
     return(
         // vì user mặc định là null nên phải thêm ? => user?.name
         // nhưng nếu thêm Loading thì không cần nữa => chắc chắn sẽ có thông tin đăng nhập
-        //<div>account page for {user.name}</div>
+        // <div>account page for {user.name}</div>
         <div>
             <nav className="w-full flex justify-center mt-8 gap-2 mb-8">
                 <Link className={linkClasses('profile')} to={'/account'}>
