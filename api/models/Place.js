@@ -10,7 +10,7 @@ const placeSchema = new mongoose.Schema({
     extraInfo: String,//thong tin thêm
     checkIn: Number,
     checkOut: Number,
-    maxGuest: Number
+    maxGuests: Number
 })
 
 const PlaceModel = mongoose.model('Place', placeSchema);
