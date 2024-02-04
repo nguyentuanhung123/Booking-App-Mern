@@ -26,6 +26,18 @@ const PlacesFormPage = () => {
         if(!id){
             return;
         }
+        axios.get('/places/'+id).then((response) => {
+            const {data} = response;
+            setTitle(data.title);
+            setAddress(data.address);
+            setAddedPhotos(data.photos);
+            setDescription(data.description);
+            setPerks(data.perks);
+            setExtraInfo(data.extraInfo);
+            setCheckIn(data.checkIn);
+            setCheckOut(data.checkOut);
+            setMaxGuests(data.maxGuests);
+        });
     },[id])
 
     const inputHeader = (text) => {
@@ -49,14 +61,25 @@ const PlacesFormPage = () => {
         );
     }
 
-    const addNewPlace = async (e) => {
+    const savePlace = async (e) => {
         e.preventDefault();
-        await axios.post('/places', {
-            title, address, photos:addedPhotos, 
+        const placeData = {
+            title, address, addedPhotos, 
             description, perks, extraInfo, 
             checkIn, checkOut, maxGuests
-        });
-        setRedirect(true);
+        }
+        if(id){
+            // update
+            await axios.put('/places', {
+                id,
+                ...placeData
+            });
+            setRedirect(true);
+        } else{
+            // new place
+            await axios.post('/places', placeData);
+            setRedirect(true);
+        }
     }
 
     if(redirect){
@@ -66,7 +89,7 @@ const PlacesFormPage = () => {
     return(
         <div>
             <AccountNav />
-            <form onSubmit={addNewPlace}>
+            <form onSubmit={savePlace}>
                 {preInput('Title','Title for your place. Should by short and catchy as in advertisement')}
                 <input 
                     type="text" 
