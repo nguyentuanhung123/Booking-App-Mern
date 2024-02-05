@@ -63,7 +63,7 @@ const PlacePage = () => {
                         {
                             place.photos?.[0] && (
                                 <div>
-                                    <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]}/>
+                                    <img onClick={() => setShowAllPhotos(true)} className="w-full aspect-square cursor-pointer object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]}/>
                                 </div>
                             )
                         }

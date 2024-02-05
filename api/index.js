@@ -4,8 +4,12 @@ const cors = require('cors');
 const mongoose  = require('mongoose');
 const bcrypt = require('bcryptjs'); //mã hoá khi gửi lên database
 const jwt = require('jsonwebtoken');
+
+//mongoose
 const User = require('./models/User.js');
 const Place = require('./models/Place.js');
+const Booking = require('./models/Booking.js');
+
 const cookieParser = require('cookie-parser'); //phần mềm trung gian để đọc cookie
 const imageDownloader = require('image-downloader');
 const multer = require('multer');
@@ -201,6 +205,23 @@ app.put('/places', async (req, res) => {
 //Đăng nhập bằng tài khoản khác thì vẫn còn 
 app.get('/places', async (req,res) => {
   res.json(await Place.find());
+})
+
+// Không cần thiết dùng async await
+// Không thể dùng if (err) throw err như trên vì ta đang gửi data
+app.post('/bookings', (req,res) => {
+  const {
+    place, checkIn, checkOut, 
+    numberOfGuests, name, phone
+  } = req.body;
+  Booking.create({
+    place, checkIn, checkOut, 
+    numberOfGuests, name, phone
+  }).then((doc) => {
+      res.json(doc);
+  }).catch((err) => {
+      throw err;
+  })
 })
 
 app.listen(port, () => {
