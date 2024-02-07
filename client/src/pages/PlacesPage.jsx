@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import AccountNav from "../components/AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PlaceImg from "../components/PlaceImg";
 
 const PlacesPage = () => {
 
@@ -33,9 +34,10 @@ const PlacesPage = () => {
                             {/* Sử dụng grow để cho phép một mục linh hoạt phát triển để lấp đầy bất kỳ khoảng trống nào có sẵn: */}
                             {/* Sử dụng grow-0 để ngăn một mục linh hoạt phát triển */}
                             <div className="flex w-32 h-32 bg-gray-300 grow shrink-0">
-                                {place.photos.length > 0 && (
+                                {/* {place.photos.length > 0 && (
                                     <img className="object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]} alt=""/>
-                                )}
+                                )} */}
+                                <PlaceImg place={place}/>
                             </div>
                             <div className="grow-0 shrink">
                                 <h2 className="text-xl">{place.title}</h2>

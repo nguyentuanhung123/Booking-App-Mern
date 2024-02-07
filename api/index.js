@@ -47,6 +47,19 @@ app.get('/test', (req, res) => {
   res.send('test ok!')
 })
 
+const getUserDataFromToken = (req) => {
+  // jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+  //   if(err) throw err;
+  //   return userData;
+  // }); => Kông thể viết thế này vì nó sẽ từ hàm async trả về getUserDataFromToken
+  return new Promise((resolve, reject) => {
+    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+      if(err) throw err;
+      resolve(userData);
+    });
+  })
+}
+
 
 //nguyentuanhung123
 //Register
@@ -209,20 +222,32 @@ app.get('/places', async (req,res) => {
 
 // Không cần thiết dùng async await
 // Không thể dùng if (err) throw err như trên vì ta đang gửi data
-app.post('/bookings', (req,res) => {
+app.post('/bookings', async(req, res) => {
+  const userData = await getUserDataFromToken(req);
   const {
     place, checkIn, checkOut, 
-    numberOfGuests, name, phone
+    numberOfGuests, name, phone, price
   } = req.body;
   Booking.create({
     place, checkIn, checkOut, 
-    numberOfGuests, name, phone
+    numberOfGuests, name, phone, price,
+    user: userData.id
   }).then((doc) => {
       res.json(doc);
   }).catch((err) => {
       throw err;
   })
-})
+});
+
+
+app.get('/bookings', async (req, res) => {
+  // bởi vì getUserDataFromToken là một promise nên phải thêm async await
+  const userData = await getUserDataFromToken(req);
+  const bookingData = await Booking.find({user:userData.id}).populate("place");
+  //console.log(bookingData);
+  res.json(bookingData);
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
