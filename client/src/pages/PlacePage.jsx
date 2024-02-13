@@ -8,6 +8,7 @@ import AddressLink from "../components/AddressLink";
 const PlacePage = () => {
 
     const {id} = useParams();
+    
     const [place, setPlace] = useState(null);
 
     useEffect(() => {

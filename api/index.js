@@ -51,7 +51,7 @@ const getUserDataFromToken = (req) => {
   // jwt.verify(token, jwtSecret, {}, async (err, userData) => {
   //   if(err) throw err;
   //   return userData;
-  // }); => Kông thể viết thế này vì nó sẽ từ hàm async trả về getUserDataFromToken
+  // }); => Không thể viết thế này vì nó sẽ từ hàm async trả về getUserDataFromToken
   return new Promise((resolve, reject) => {
     jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
       if(err) throw err;
@@ -78,7 +78,11 @@ app.post('/register', async (req, res) => {
   }
 });
 
-//Login
+// Login
+// Sau khi gửi thông tin lên server , server sẽ kiểm tra email và password
+// Nếu đúng thì sẽ tạo jwt (token) bao gồm thông tin (tạo từ email , password) và khoá bí mật
+// Tạo xong server sẽ trả cho browser (user) token đó và thông tin user đang đăng nhập  
+// Phải lưu nó ở Cookies khi được server trả về
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const userDoc = await User.findOne({ email }); // Find user with the provided email in the database
@@ -104,6 +108,10 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Hàm này trả về thông tin chi tiết của user đang đăng nhập
+// Trang sử dụng hàm này là <UserContext />
+// Lý do sử dụng : Sau hhi đăng nhập và chuyển đến trang chủ thì khi refresh sẽ mất hết dữ liệu của user đã đăng nhập dù cookie vẫn còn lưu
+// Sử dụng hàm này giúp chúng ta khi refresh , nó sẽ gửi cookies lên server và trả về thông tin của user trong cookies đó (Xem chi tiết ở <UserContext />)
 app.get('/profile', (req, res) => {
   const {token} = req.cookies;
   if(token){
@@ -160,6 +168,9 @@ app.post('/upload', photosMiddleware.array('photos', 100),(req, res) => {
   res.json(uploadedFiles);
 });
 
+// Tạo place cho user đang đăng nhập
+// Sau khi tạo xong thì place đó sẽ được hiển thị ở IndexPage
+// Trang sử dụng hàm này : <PlacesFormPage />
 app.post('/places', (req, res) => {
   const {token} = req.cookies;
   const {
@@ -177,6 +188,9 @@ app.post('/places', (req, res) => {
   })
 });
 
+// Cung cấp các place mà user đang đăng nhập đã đăng lên ứng dụng
+// Trang sử dụng hàm này : <PlacesPage />
+// PlacesPage là trang hiển thị danh sách các place của user đang đăng nhập đã đăng
 app.get('/user-places', (req, res) => {
   const {token} = req.cookies;
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -185,12 +199,18 @@ app.get('/user-places', (req, res) => {
   });
 });
 
+// Trang sử dụng hàm này là : <PlacePage />
+// PlacePage là trang hiển thị thông tin chi tiết của place đó
+// Hàm này giúp cung cấp thông tin chi tiết của place đó
 app.get('/places/:id', async (req, res) => {
   const {id} = req.params;
   res.json(await Place.findById(id));
   //res.json(req.params);//id: "65be...ef"
 })
 
+// Sửa lại thông tin của một place nào đó 
+// Yêu cầu để sửa lại thông tin : user đang đăng nhập phải trùng với ở database mới có thể sửa
+// Trang sử dụng hàm này là : <PlacesFormPage />
 app.put('/places', async (req, res) => {
   const {token} = req.cookies;
   const {
@@ -214,12 +234,35 @@ app.put('/places', async (req, res) => {
   });
 });
 
-//In tất cả các place có trong database (res.json(await Place.find());)
-//Đăng nhập bằng tài khoản khác thì vẫn còn 
+//delete 
+app.delete('/user-places/:id' , async (req, res) => {
+    const userData = await getUserDataFromToken(req);
+    const {id} = req.params;
+    try{
+      const placeDoc = await Place.findById(id);
+      if (!placeDoc) {
+        return res.status(404).json({ error: 'Place not found' });
+      }
+      if (userData.id !== placeDoc.owner.toString()) {
+        return res.status(403).json({ error: 'Unauthorized: You are not the owner of this place' });
+      }
+      await Place.deleteOne({ _id: id });
+      res.json({ message: 'Place deleted successfully' });
+    }catch(e){
+      console.error('Error deleting place:', e);
+      res.status(500).json({ e: 'Internal Server Error' });
+    }
+})  
+
+// In tất cả các place có trong database (res.json(await Place.find());)
+// Đăng nhập bằng tài khoản khác thì vẫn còn 
+// Trang sử dụng hàm này : <IndexPage />
 app.get('/places', async (req,res) => {
   res.json(await Place.find());
 })
 
+// Tạo booking mà user đã điền thông tin và gửi lên database
+// Page sử dụng hàm này : <BookingWidget /> <Nằm trong PlacePage>
 // Không cần thiết dùng async await
 // Không thể dùng if (err) throw err như trên vì ta đang gửi data
 app.post('/bookings', async(req, res) => {
@@ -240,6 +283,8 @@ app.post('/bookings', async(req, res) => {
 });
 
 
+// Cung cấp thông tin chi tiết của các booking mà user đang đăng nhập đã đặt (bao gồm cả thông tin chi tiết của place liên quan đến booking đó)
+// Trang sử dụng : <BookingsPage />
 app.get('/bookings', async (req, res) => {
   // bởi vì getUserDataFromToken là một promise nên phải thêm async await
   const userData = await getUserDataFromToken(req);

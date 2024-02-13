@@ -1,11 +1,15 @@
-const PlaceImg = ({place, index=0}) => {
+const PlaceImg = ({place, index=0, className}) => {
 
     if(!place.photos?.length){
         return '';
     }
 
+    if(!className){
+        className = 'object-cover'
+    }
+
     return(
-        <img className="object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]} alt=""/>
+        <img className={className} src={'http://localhost:4000/uploads/'+place.photos[index]} alt=""/>
     )
 }
 export default PlaceImg;
