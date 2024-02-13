@@ -26,11 +26,12 @@ button.primary{
 }
 
 .search{
+    margin-top: 2rem;
     display: flex;
     align-items: center;
     background-color: rgb(233, 233, 233);
     border-radius: 10px;
-    padding: 5px;
+    padding: 0.4rem;
     margin-bottom: 1.5em;
 }
 
