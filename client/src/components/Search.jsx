@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { MdSearch } from "react-icons/md";
 
 const Search = ({ handleSearchPlace }) => {

@@ -13,9 +13,12 @@ const LoginPage = () => {
         e.preventDefault();
         try{
             const response = await axios.post('/login' , {email, password});//response trả về tất cả các giá trí của User như config , data, ...
-            setUser(response.data);
-            alert('Login successfull');
-            setRedirect(true);
+            if(response.data.success){
+                setUser(response.data.data);
+                alert('Login successfull');
+                setRedirect(true);
+            }
+            // console.log("Response of login: ", response);
         }catch(e){
             alert('Login failed');
         }

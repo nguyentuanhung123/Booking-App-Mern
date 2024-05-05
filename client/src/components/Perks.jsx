@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const Perks = ({selected, onChange}) => {
 
     const handleCbClick = (e) => {

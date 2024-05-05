@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const AddressLink = ({children, className = null}) => {
 
     if(!className){

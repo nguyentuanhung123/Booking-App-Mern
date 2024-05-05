@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const PlaceImg = ({place, index=0, className}) => {
 
     if(!place.photos?.length){

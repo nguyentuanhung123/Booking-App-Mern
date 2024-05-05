@@ -65,14 +65,28 @@ const getUserDataFromToken = (req) => {
 //Register
 app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
+
+  if (!name || !email || !password){
+    res.status(400).json({
+      message: "Please provide fully information",
+      success: false,
+      error: true
+    });
+  }
+  
   try{
     const userDoc = await User.create({
       name,
       email,
       password:bcrypt.hashSync(password, bcryptSalt),//đồng bộ hoá băm =>  trả về giá trị băm cuối cùng của mật khẩu
+      role: 'GENERAL'
     });
     //res.json({name, email, password});
-    res.json(userDoc);
+    res.status(200).json({
+      data: userDoc,
+      success: true,
+      error: false
+    });
   }catch(e){
     res.status(422).json(e); // 422 : lỗi không thể xử lý được
   }
@@ -93,18 +107,34 @@ app.post('/login', async (req, res) => {
       jwt.sign({ 
         email: userDoc.email, 
         id: userDoc._id, 
-      }, jwtSecret, {}, (err, token) => {
+        role: userDoc.role
+      }, jwtSecret, { expiresIn: '1d' }, (err, token) => {
         if (err) throw err;
         // Set the JWT as a cookie and respond with 'pass ok'
-        res.cookie('token', token).json(userDoc);//View on Response Headers (Set Cookie) , hàm này chủ chạy sau khi frontend chạy xong
+        res.cookie('token', token).json({
+          data: userDoc,
+          message: "pass ok",
+          success: true, 
+          error:false
+        });//View on Response Headers (Set Cookie) , hàm này chủ chạy sau khi frontend chạy xong
       });
     } else {
       // Respond with 'pass not ok' if the password does not match
-      res.status(422).json('pass not ok');
+      res.status(422).json({
+        data: {},
+        message: "pass not ok",
+        sucess: true, 
+        error:false
+      });
     }
   } else {
     // Respond with 'not found' if the user with the provided email is not found
-    res.json('not found');
+    res.status(400).json({
+      data: {},
+      message: "not found",
+      sucess: true, 
+      error:false
+    });
   }
 });
 
@@ -118,8 +148,8 @@ app.get('/profile', (req, res) => {
     //giải mã
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
       if(err) throw err; 
-      const {name, email, _id} = await User.findById(userData.id);
-      res.json({name, email, _id});
+      const {name, email, role, _id, gender, dateOfBirth, phone} = await User.findById(userData.id);
+      res.json({name, email, role, _id, gender, dateOfBirth, phone});
     })
   }else{
     res.json(null);
@@ -292,6 +322,33 @@ app.get('/bookings', async (req, res) => {
   //console.log(bookingData);
   res.json(bookingData);
 });
+
+app.put('/editProfile', async (req, res) => {
+  const userData = await getUserDataFromToken(req);
+
+  const { id, name, gender, phone, dateOfBirth } = req.body
+
+  const payload = {
+    ...( name && { name : name } ),
+    ...( gender && { gender : gender } ),
+    ...( phone && { phone : phone } ),
+    ...( dateOfBirth && { dateOfBirth : dateOfBirth } ),
+}
+
+  console.log(id);
+
+  const user = await User.findById(userData.id)
+
+  if(id === user.id) {
+    const updateUser = await User.findByIdAndUpdate(id, payload)
+    return res.json({
+      data: updateUser,
+      message: "User Updated",
+      success: true,
+      error: false
+    })
+  }
+})
 
 
 app.listen(port, () => {
