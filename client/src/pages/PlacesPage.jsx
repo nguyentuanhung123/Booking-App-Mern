@@ -33,10 +33,10 @@ const PlacesPage = () => {
                     Add new place
                 </Link>
             </div>
-            <div className="mt-4 relative">
+            <div className="mt-4">
                 {places.length > 0 && places.map((place) => {
                     return(
-                        <div key={place._id}>
+                        <div key={place._id} className="relative">
                             <Link to={'/account/places/'+place._id} className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl">
                                 {/* Sử dụng shrink để cho phép một mục linh hoạt thu nhỏ nếu cần: */}
                                 {/* Sử dụng shrink-0 để ngăn vật phẩm linh hoạt bị co lại: */}
