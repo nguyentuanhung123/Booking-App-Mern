@@ -50,7 +50,7 @@ const PlacesPage = () => {
                                 </div>
                                 <div className="grow-0 shrink">
                                     <h2 className="text-xl">{place.title}</h2>
-                                    <p className="text-sm mt-2">{place.description}</p>
+                                    <p className="text-sm mt-2 text-ellipsis line-clamp-2">{place.description}</p>
                                 </div>
                             </Link>
                             <span className="cursor-pointer absolute right-2 top-2" onClick={() => deleteUserPlace(place._id)}>X</span>

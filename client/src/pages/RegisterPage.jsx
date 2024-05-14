@@ -6,6 +6,7 @@ const RegisterPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
 
     const registerUser = async (e) => {
         e.preventDefault();
@@ -13,7 +14,8 @@ const RegisterPage = () => {
             const response = await axios.post('/register',{
                 name,
                 email,
-                password
+                password, 
+                role
             });
             if(response.data.success){
                 alert('Registration successfully. Now you can log in')
@@ -43,6 +45,11 @@ const RegisterPage = () => {
                            placeholder="password"
                            value={password}
                            onChange={(e) => setPassword(e.target.value)}/>
+                    <select onChange={(e) => setRole(e.target.value)}>
+                        <option value="">--PLEASE SELECT ROLE--</option>
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
                     <button className="primary">Register</button>
                     <div className="text-center py-2 text-gray-500">
                         Already a member? <Link className="underline text-black" to='/login'>Login</Link>

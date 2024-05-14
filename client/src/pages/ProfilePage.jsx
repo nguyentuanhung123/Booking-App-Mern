@@ -137,8 +137,8 @@ const ProfilePage = () => {
                 </div>
                 <div className="grid">
                     <label>Gender : </label>
-                    <select className="w-full h-full outline-none bg-transparent border-none" value={user && user.gender ? user.gender : ''}  onChange={onChangeUserGender}>
-                        <option value=""></option>
+                    <select value={user && user.gender ? user.gender : ''}  onChange={onChangeUserGender}>
+                        <option value="">--PLEASE SELECT GENDER--</option>
                         <option value="female">Female</option>
                         <option value="male">Male</option>
                     </select>

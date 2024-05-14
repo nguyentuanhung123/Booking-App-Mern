@@ -64,9 +64,9 @@ const getUserDataFromToken = (req) => {
 //nguyentuanhung123
 //Register
 app.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
-  if (!name || !email || !password){
+  if (!name || !email || !password || !role){
     res.status(400).json({
       message: "Please provide fully information",
       success: false,
@@ -79,7 +79,7 @@ app.post('/register', async (req, res) => {
       name,
       email,
       password:bcrypt.hashSync(password, bcryptSalt),//đồng bộ hoá băm =>  trả về giá trị băm cuối cùng của mật khẩu
-      role: 'GENERAL'
+      role
     });
     //res.json({name, email, password});
     res.status(200).json({
@@ -288,7 +288,7 @@ app.delete('/user-places/:id' , async (req, res) => {
 // Đăng nhập bằng tài khoản khác thì vẫn còn 
 // Trang sử dụng hàm này : <IndexPage />
 app.get('/places', async (req,res) => {
-  res.json(await Place.find());
+  res.json(await Place.find().populate("owner"));
 })
 
 // Tạo booking mà user đã điền thông tin và gửi lên database
