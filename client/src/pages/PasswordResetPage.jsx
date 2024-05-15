@@ -33,9 +33,11 @@ const PasswordResetPage = () => {
                     message ? ( <p className='text-green-500 font-bold'>password reset link send successfully in yout email.</p>) : ( "" )
                 }
                 <form className="max-w-md mx-auto">
-                    <label>Email</label>
+                    <label htmlFor='email' className='font-bold'>Email</label>
                     <input type="email" 
                            placeholder="your@email.com" 
+                           name='email'
+                           id='email'
                            value={email} 
                            onChange={setVal}/>
                     <button className="primary mt-2" onClick={sendLink}>Send</button>

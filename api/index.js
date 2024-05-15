@@ -426,6 +426,79 @@ app.post("/sendpasswordlink" , async(req, res) => {
   }
 })
 
+// verify user for forgot password time
+app.get("/forgotpassword/:id/:token", async(req, res) => {
+  const { id, token } = req.params;
+
+  try {
+    const validuser = await User.findOne({ _id: id, verifyToken: token});
+    
+    const verifyToken = jwt.verify(token, jwtSecret);
+
+    // console.log("verifyToken: ", verifyToken); // { _id: '6643bbc9f04f89ab3f7ce6b3', iat: 1715793431, exp: 1715879831 }
+
+    if(validuser && verifyToken._id) {
+      return res.status(201).json({
+        status: 201,
+        validuser,
+        success: true,
+        error: false
+      })
+    } else {
+      return res.status(401).json({
+        status: 401,
+        message: "user not exits",
+        success: false,
+        error: true
+      })
+    }
+  } catch(err) {
+    return res.status(401).json({
+      status: 401,
+      err
+    })
+  }
+})
+
+
+// change password
+
+app.post("/:id/:token", async(req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const validuser = await User.findOne({ _id: id, verifyToken: token});
+    
+    const verifyToken = jwt.verify(token, jwtSecret);
+
+    if(validuser && verifyToken._id) {
+      const newPassword = await bcrypt.hash(password, 12);
+
+      const setnewuserpass = await User.findByIdAndUpdate({ _id: id }, { password: newPassword })
+
+      setnewuserpass.save();
+      return res.status(201).json({
+        status: 201,
+        setnewuserpass,
+        success: true,
+        error: false
+      })
+    } else {
+        return res.status(401).json({
+          status: 401,
+          message: "user not exits",
+          success: false,
+          error: true
+        })
+    }
+  } catch(err) {
+    return res.status(401).json({
+      status: 401,
+      err
+    })
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
