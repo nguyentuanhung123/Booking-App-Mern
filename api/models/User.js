@@ -9,6 +9,9 @@ const UserSchema = new Schema({
     gender: String,
     dateOfBirth: String,
     role: String,
+    verifyToken: {
+        type: String
+    }
 });
 
 const UserModel = mongoose.model('User', UserSchema);

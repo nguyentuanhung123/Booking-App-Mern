@@ -16,6 +16,8 @@ const multer = require('multer');
 const fs = require('fs');
 require('dotenv').config()//giúp quản lý và tải các biến môi trường từ một file .env và đưa chúng vào trong quá trình thực thi ứng dụng.
 
+const nodemailer = require("nodemailer");
+
 const app = express()
 const port = 4000
 
@@ -59,6 +61,15 @@ const getUserDataFromToken = (req) => {
     });
   })
 }
+
+// email config
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "nguyentuanhung4529871036@gmail.com",
+    pass: "wsybvxozzdykyrij"
+  }
+})
 
 
 //nguyentuanhung123
@@ -346,6 +357,71 @@ app.put('/editProfile', async (req, res) => {
       message: "User Updated",
       success: true,
       error: false
+    })
+  }
+})
+
+// send email Link for reset password
+app.post("/sendpasswordlink" , async(req, res) => {
+  // console.log(req.body);
+
+  const {email} = req.body;
+  
+  if(!email) {
+    res.status(401).json({
+      message: "Enter your email",
+      status: 401,
+      success: false,
+      error: true
+    })
+  }
+
+  try {
+    const userfind = await User.findOne({ email: email });
+
+    // token generate for reset password
+    const token = jwt.sign({_id: userfind._id}, jwtSecret, {
+      expiresIn: "120s"
+    })
+
+    const setusertoken = await User.findByIdAndUpdate({_id: userfind._id}, {verifyToken: token}, {new: true});
+
+    if(setusertoken) {
+      const mailOptions = {
+        from: "nguyentuanhung4529871036@gmail.com",
+        to: email,
+        subject: "Sending Email For password Reset",
+        text: `This Link Valid For 2 MINUTES http://localhost:5200/forgotpassword/${userfind._id}/${setusertoken.verifyToken}`
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if(error) {
+          console.log("error", error);
+          return res.status(401).json({
+            status: 401,
+            message: "Email not send",
+            success: false,
+            error: true
+          })
+        } else {
+          console.log("Email sent", info.response);
+          return res.status(201).json({
+            status: 201,
+            message: "Email send successfully",
+            success: true,
+            error: false
+          })
+        }
+      })
+    }
+   
+
+  } catch (err) {
+    return res.status(401).json({
+      status: 401,
+      message: "invalid user",
+      success: false,
+      error: true
     })
   }
 })
