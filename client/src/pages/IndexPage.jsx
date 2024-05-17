@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Search from "../components/Search";
 import ReactPaginate from 'react-paginate';
+import { useTranslation } from "react-i18next";
 
 const IndexPage = () => {
+
+    const {t} = useTranslation();
 
     const [places, setPlaces] = useState([]);
 
@@ -63,11 +66,11 @@ const IndexPage = () => {
                                             )
                                         }
                                     </div>
-                                    <h2 className="font-bold">Hosted by {place.owner.name}</h2>
+                                    <h2 className="font-bold">{t('host by')} {place.owner.name}</h2>
                                     <h2 className="font-semibold">{place.address}</h2>
                                     <h3 className="text-sm text-gray-500">{place.title}</h3>
                                     <div className="mt-1">
-                                        <span className="font-bold">${place.price}</span> per night
+                                        <span className="font-bold">${place.price}</span>/{t('per night')}
                                     </div>
                                 </Link>
                         )

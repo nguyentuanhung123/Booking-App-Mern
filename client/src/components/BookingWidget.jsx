@@ -5,7 +5,11 @@ import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
+import {useTranslation} from 'react-i18next'
+
 const BookingWidget = ({place}) => {
+
+    const {t} = useTranslation();
 
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
@@ -18,7 +22,7 @@ const BookingWidget = ({place}) => {
     const {user} = useContext(UserContext);
 
     useEffect(() => {
-       setName(user.name)
+       setName(user?.name)
     }, [])
 
     let numberOfNights = 0;
@@ -43,19 +47,19 @@ const BookingWidget = ({place}) => {
     return(
         <div className="bg-white shadow p-4 rounded-2xl">
             <div className="text-2xl text-center">
-                Price: ${place.price} / per night
+                {t('price')}: ${place.price} / {t('per night')}
             </div>
             <div className="border rounded-2xl mt-4">
                 <div className="flex">
                     <div className="py-3 px-4">
-                        <label>Check in:</label>
+                        <label>{t('chech in')}:</label>
                         <input 
                             type="date" 
                             value={checkIn} 
                             onChange={(e) => setCheckIn(e.target.value)}/>
                     </div>
                     <div className="py-3 px-4 border-l">
-                        <label>Check out:</label>
+                        <label>{t('chech out')}:</label>
                         <input 
                             type="date" 
                             value={checkOut} 
@@ -63,7 +67,7 @@ const BookingWidget = ({place}) => {
                     </div>
                 </div>
                 <div className="py-3 px-4 border-t">
-                    <label>Number of guests:</label>
+                    <label>{t('number of guests')}:</label>
                     <input type="number"
                         value={numberOfGuests}
                         onChange={(e) => setNumberOfGuests(e.target.value)}/>

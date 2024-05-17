@@ -4,8 +4,11 @@ import { useParams } from "react-router-dom";
 import BookingWidget from "../components/BookingWidget";
 import PlaceGallery from "../components/PlaceGallery";
 import AddressLink from "../components/AddressLink";
+import { useTranslation } from "react-i18next";
 
 const PlacePage = () => {
+
+    const {t} = useTranslation();
 
     const {id} = useParams();
     
@@ -31,12 +34,12 @@ const PlacePage = () => {
             <div className="mt-8 mb-8 grid gap-8 grid-cols-1 md:grid-cols-[2fr_1fr]">  
                 <div>
                     <div className="my-4">
-                        <h2 className="font-semibold text-2xl">Description</h2>
+                        <h2 className="font-semibold text-2xl">{t('description')}</h2>
                         {place.description}
                     </div>      
-                    Check-in: {place.checkIn}<br />
-                    Check-out: {place.checkOut}<br />
-                    Max number of guest: {place.maxGuests}
+                    {t('start time')}: {place.checkIn}{t('h')} {t('pm')}<br />
+                    {t('end time')}: {place.checkOut}{t('h')} {t('am')}<br />
+                    {t('max number of guest')}: {place.maxGuests}
                 </div>
                 <div>
                     <BookingWidget place={place}/>
