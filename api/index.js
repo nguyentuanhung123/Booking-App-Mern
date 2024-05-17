@@ -31,10 +31,19 @@ app.use(cookieParser());
 // xem ảnh khi có link ảnh
 app.use('/uploads', express.static(__dirname+'/uploads'));//http://localhost:4000/uploads/photo1706931498409.jpg
 
+const allowedOrigins = ['http://localhost:5200', 'http://localhost:5173'];
+
 // link to client
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:5200',
+  // origin: 'http://localhost:5200',
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }))
 
 //console.log("URL mongoose : ",process.env.MONGO_URL);

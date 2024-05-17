@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AccountNav from "../components/AccountNav";
 import { Navigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const PlacesFormPage = () => {
+
+    const {t} = useTranslation();
 
     const {id} = useParams();
     //console.log("Id : ",id); //Id :  65be797b128b3fd785e8d1ef
@@ -117,7 +120,7 @@ const PlacesFormPage = () => {
                 {preInput('Check in&out times','add check in and out times, remember to have some time window for cleaning the room between guests')}
                 <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
                     <div>
-                        <h3 className="mt-2 -mb-1">Check in time</h3>
+                        <h3 className="mt-2 -mb-1">{t('start time')}</h3>
                         <input 
                             type="text" 
                             value={checkIn} 
@@ -125,7 +128,7 @@ const PlacesFormPage = () => {
                             placeholder="14"/>
                     </div>
                     <div>
-                        <h3 className="mt-2 -mb-1">Check out time</h3>
+                        <h3 className="mt-2 -mb-1">{t('end time')}</h3>
                         <input 
                             type="text" 
                             value={checkOut} 
@@ -133,21 +136,21 @@ const PlacesFormPage = () => {
                             placeholder="11"/>
                     </div>
                     <div>
-                        <h3 className="mt-2 -mb-1">Max number of guest</h3>
+                        <h3 className="mt-2 -mb-1">{t('max number of guest')}</h3>
                         <input 
                             type="number" 
                             value={maxGuests} 
                             onChange={(e) => setMaxGuests(e.target.value)}/>
                     </div>
                     <div>
-                        <h3 className="mt-2 -mb-1">Price per night</h3>
+                        <h3 className="mt-2 -mb-1">{t('price per night')}</h3>
                         <input 
                             type="number" 
                             value={price} 
                             onChange={(e) => setPrice(e.target.value)}/>
                     </div>
                 </div>
-                <button className="primary my-4">Save</button>
+                <button className="primary my-4">{t('save')}</button>
             </form>
         </div>
     )

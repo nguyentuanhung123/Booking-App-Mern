@@ -74,12 +74,12 @@ const BookingWidget = ({place}) => {
                 </div>
                 {numberOfNights > 0 && (
                     <div className="py-3 px-4 border-t">
-                        <label>Your full name:</label>
+                        <label>{t('your full name')}:</label>
                         <input 
                             type="text" 
                             value={name} 
                             onChange={(e) => setName(e.target.value)}/>
-                        <label>Phone number:</label>
+                        <label>{t('phone number')}:</label>
                         <input 
                             type="tel" 
                             value={phone} 
@@ -88,7 +88,7 @@ const BookingWidget = ({place}) => {
                 )}
             </div>
             <button onClick={bookThisPlace} className="primary mt-4">
-                Book this place
+                {t('book this place')}
                 {numberOfNights > 0 && (
                     <span> ${numberOfNights * place.price}</span>
                 )}

@@ -4,8 +4,11 @@ import { Navigate } from "react-router-dom";
 import axios from "axios";
 //import PlacesPage from "./PlacesPage";
 import AccountNav from "../components/AccountNav";
+import { useTranslation } from "react-i18next";
 
 const ProfilePage = () => {
+
+    const {t} = useTranslation();
 
     //let { subpage } = useParams();
 
@@ -126,9 +129,9 @@ const ProfilePage = () => {
                 subpage === 'places' && <PlacesPage />
             } */}
             <div className="text-center max-w-lg mx-auto">
-                Logged in as a {user.name} ({user.email})
+                {t('logged in as a')} {user.name} ({user.email})
                 <div className="grid">
-                    <label>Name : </label>
+                    <label>{t('name')} : </label>
                     <input type="text" value={user.name} onChange={(e) => onChangeUserName(e)}></input>
                 </div>
                 <div className="grid">
@@ -136,23 +139,23 @@ const ProfilePage = () => {
                     <input type="text" value={user.email}></input>
                 </div>
                 <div className="grid">
-                    <label>Gender : </label>
+                    <label>{t('gender')} : </label>
                     <select value={user && user.gender ? user.gender : ''}  onChange={onChangeUserGender}>
-                        <option value="">--PLEASE SELECT GENDER--</option>
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
+                        <option value="">--{t('PLEASE SELECT GENDER')}--</option>
+                        <option value="female">{t('female')}</option>
+                        <option value="male">{t('male')}</option>
                     </select>
                 </div>
                 <div className="grid">
-                    <label>Date of birth : </label>
+                    <label>{t('date of birth')} : </label>
                     <input type="date" value={user && user.dateOfBirth ? user.dateOfBirth : ''} onChange={(e) => onChangeUserDateOfBirth(e)}></input>
                 </div>
                 <div className="grid">
-                    <label>Phone : </label>
+                    <label>{t('phone')} : </label>
                     <input type="number" value={user && user.phone ? user.phone : ''} onChange={(e) => onChangeUserPhone(e)}></input>
                 </div>
-                <button onClick={editProfile} className="primary max-w-sm mt-2">Edit Profile</button>
-                <button onClick={logout} className="primary max-w-sm mt-2">Logout</button>
+                <button onClick={editProfile} className="primary max-w-sm mt-2">{t('edit profile')}</button>
+                <button onClick={logout} className="primary max-w-sm mt-2">{t('logout')}</button>
             </div> 
         </div>
     )
