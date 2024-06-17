@@ -346,9 +346,10 @@ app.get('/bookings', async (req, res) => {
 app.put('/editProfile', async (req, res) => {
   const userData = await getUserDataFromToken(req);
 
-  const { id, name, gender, phone, dateOfBirth } = req.body
+  const { id, profilePic, name, gender, phone, dateOfBirth } = req.body
 
   const payload = {
+    ...( profilePic && { profilePic : profilePic } ),
     ...( name && { name : name } ),
     ...( gender && { gender : gender } ),
     ...( phone && { phone : phone } ),

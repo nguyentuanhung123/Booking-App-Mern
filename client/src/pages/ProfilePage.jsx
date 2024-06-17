@@ -5,6 +5,9 @@ import axios from "axios";
 //import PlacesPage from "./PlacesPage";
 import AccountNav from "../components/AccountNav";
 import { useTranslation } from "react-i18next";
+import LockIcons from "../components/icons/LockIcons";
+// import UserIcons from "../components/icons/UserIcons";
+import imageToBase64 from "../helper/imageToBase64";
 
 const ProfilePage = () => {
 
@@ -14,7 +17,10 @@ const ProfilePage = () => {
 
     const {ready, user, setUser} = useContext(UserContext);
 
+    console.log(user);
+
     const [id, setId] = useState("");
+    const [profilePic, setProfilePic] = useState("");
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [gender, setGender] = useState("");
@@ -24,6 +30,7 @@ const ProfilePage = () => {
 
     useEffect(() => {
         setId(user?._id); // Update id state variable with user's _id
+        setProfilePic(user?.profilePic)
         setName(user?.name); // Update name state variable with user's name
         setGender(user?.gender); // Update gender state variable with user's gender
         setPhone(user?.phone); // Update phone state variable with user's phone number
@@ -94,13 +101,39 @@ const ProfilePage = () => {
         setRedirect('/');
     }
 
+    const handleUploadFile = async (e) => {
+        const file = e.target.files[0];
+        let Image64 = "";
+        if(file?.name) {
+            console.log(file);
+            Image64 = await imageToBase64(file)
+        }
+
+        // setData((prev) => {
+        //     return{
+        //         ...prev,
+        //         profilePic: Image64
+        //     }
+        // })
+
+        if(user){
+            setUser({
+                ...user,
+                profilePic: Image64
+            })
+        }
+        // setProfilePic(Image64)
+
+        console.log("imageToBase64", Image64);
+    }
+
     const editProfile = async () => {
         if(phone.length > 10 || phone.length <10 ) {
             alert ("The phone number must have 10 digits");
             return;
         }
         const response = await axios.put('/editProfile' , {
-            id, name, gender, phone, dateOfBirth
+            id, name, profilePic, gender, phone, dateOfBirth
         });
         if(response.data.success){
             alert("Update User successfully")
@@ -134,6 +167,25 @@ const ProfilePage = () => {
             } */}
             <div className="text-center max-w-lg mx-auto">
                 {t('logged in as a')} {user.name} ({user.email})
+                <div className="card-header">
+                    <div className="sign-form-lock-container">
+                        {
+                            user?.profilePic ? (
+                                <img src={user?.profilePic} className="profile-pic"/>
+                            ) : (
+                                <div className="lock-icons">
+                                    <LockIcons />
+                                </div>
+                            )
+                        }
+                        <form>
+                            <label htmlFor="upload-pic-input">
+                                <div className="upload-pic-text">Upload Pic</div>
+                                <input type="file" id="upload-pic-input" onChange={handleUploadFile}/>
+                            </label>
+                        </form> 
+                    </div>
+                </div>
                 <div className="grid">
                     <label>{t('name')} : </label>
                     <input type="text" value={user.name} onChange={(e) => onChangeUserName(e)}></input>
