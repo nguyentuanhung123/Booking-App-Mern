@@ -1,14 +1,17 @@
 import PhotosUploader from "../components/PhotosUploader";
 import Perks from "../components/Perks";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AccountNav from "../components/AccountNav";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { UserContext } from "../context/UserContext";
 
 const PlacesFormPage = () => {
 
     const {t} = useTranslation();
+
+    const navigate = useNavigate()
 
     const {id} = useParams();
     //console.log("Id : ",id); //Id :  65be797b128b3fd785e8d1ef
@@ -23,6 +26,8 @@ const PlacesFormPage = () => {
     const [checkOut, setCheckOut] = useState('');
     const [maxGuests, setMaxGuests] = useState(1);
     const [price, setPrice] = useState(10);
+
+    const {user} = useContext(UserContext);
 
     const [redirect, setRedirect] = useState(false);
 
@@ -81,6 +86,11 @@ const PlacesFormPage = () => {
             });
             setRedirect(true);
         } else{
+            if(!user.phone){
+                alert("Please provide your phone number in profile page")
+                navigate('/account')
+                return;
+            }
             // new place
             await axios.post('/places', placeData);
             setRedirect(true);

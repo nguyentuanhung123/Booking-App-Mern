@@ -42,5 +42,11 @@
     "logout": "Đăng xuất",
     "PLEASE SELECT GENDER": "VUI LÒNG CHỌN GIỚI TÍNH",
     "female": "Nữ",
-    "male": "Nam"
+    "male": "Nam",
+    "login": "Đăng nhập",
+    "register now": "Đăng ký ngay",
+    "do not have an account yet?": "Chưa có tài khoản?",
+    "forgot Password": "Quên mật khẩu?",
+    "click here": "Nhấn vào đây",
+    "created at": "Đăng vào ngày"
 }

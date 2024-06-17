@@ -128,7 +128,7 @@ app.post('/login', async (req, res) => {
         email: userDoc.email, 
         id: userDoc._id, 
         role: userDoc.role
-      }, jwtSecret, { expiresIn: '1d' }, (err, token) => {
+      }, jwtSecret, { expiresIn: '10d' }, (err, token) => {
         if (err) throw err;
         // Set the JWT as a cookie and respond with 'pass ok'
         res.cookie('token', token).json({
@@ -308,7 +308,7 @@ app.delete('/user-places/:id' , async (req, res) => {
 // Đăng nhập bằng tài khoản khác thì vẫn còn 
 // Trang sử dụng hàm này : <IndexPage />
 app.get('/places', async (req,res) => {
-  res.json(await Place.find().populate("owner"));
+  res.json(await Place.find().populate("owner").sort({ createdAt: -1 }));
 })
 
 // Tạo booking mà user đã điền thông tin và gửi lên database
@@ -505,6 +505,61 @@ app.post("/:id/:token", async(req, res) => {
     return res.status(401).json({
       status: 401,
       err
+    })
+  }
+})
+
+// get owner
+app.get('/allAdmin', async (req,res) => {
+  res.json(await User.find({ role: "ADMIN" }));
+})
+
+// get renter
+app.get('/allGeneral', async (req,res) => {
+  res.json(await User.find({ role: "GENERAL" }));
+})
+
+// get all booking
+app.get('/allBookings', async (req,res) => {
+  res.json(await Booking.find());
+})
+
+// delete user
+app.delete('/deleteUser/:id', async (req,res) => {
+  try {
+    const id = req.params.id;
+    const deleteUser = await User.deleteOne({_id: id})
+    return res.status(200).json({
+      message: "Delete user successfully",
+      data: deleteUser,
+      error: false,
+      success: true
+    })
+  } catch(err) {
+    return res.status(500).json({
+      message: err,
+      error: true,
+      success: false
+    })
+  }
+})
+
+// delete place
+app.delete('/deletePlace/:id', async (req,res) => {
+  try {
+    const id = req.params.id;
+    const deletePlace = await Place.deleteOne({_id: id})
+    return res.status(200).json({
+      message: "Delete place successfully",
+      data: deletePlace,
+      error: false,
+      success: true
+    })
+  } catch(err) {
+    return res.status(500).json({
+      message: err,
+      error: true,
+      success: false
     })
   }
 })

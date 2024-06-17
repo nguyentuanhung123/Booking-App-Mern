@@ -95,6 +95,10 @@ const ProfilePage = () => {
     }
 
     const editProfile = async () => {
+        if(phone.length > 10 || phone.length <10 ) {
+            alert ("The phone number must have 10 digits");
+            return;
+        }
         const response = await axios.put('/editProfile' , {
             id, name, gender, phone, dateOfBirth
         });

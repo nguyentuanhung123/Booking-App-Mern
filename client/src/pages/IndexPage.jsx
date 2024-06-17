@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Search from "../components/Search";
 import ReactPaginate from 'react-paginate';
 import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
 
 const IndexPage = () => {
 
@@ -55,6 +56,7 @@ const IndexPage = () => {
             <div className="mt-8 grid gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {
                     filteredPlaces.length > 0 && filteredPlaces.map((place) => {
+                        {/* const parsedDate = parseISO(place?.createdAt); */}
                         return(
                                 <Link to={'/place/' + place._id} key={place._id}>
                                     <div className="bg-gray-500 mb-2 rounded-2xl flex">
@@ -62,12 +64,15 @@ const IndexPage = () => {
                                             place.photos?.[0] && (
                                                 // Sử dụng tiện ích aspect-{ratio} để đặt tỷ lệ khung hình mong muốn của một phần tử.
                                                 // square : để image là hình vuông
-                                                <img className="rounded-2xl object-cover aspect-square" src={'http://localhost:4000/uploads/'+place.photos?.[0]} alt=""/>
+                                                <img className="rounded-2xl object-cover aspect-square md:w-full" src={'http://localhost:4000/uploads/'+place.photos?.[0]} alt=""/>
                                             )
                                         }
                                     </div>
                                     <h2 className="font-bold">{t('host by')} {place.owner.name}</h2>
+                                    <h2 className="font-bold">{t('phone')}: 0{place.owner.phone}</h2>
                                     <h2 className="font-semibold">{place.address}</h2>
+                                    {/* <h2 className="font-semibold">Create at: {place.createdAt ? parseISO(place?.createdAt) : "0"}</h2> */}
+                                    <h2 className="font-semibold">{t('created at')}: {format(new Date(place.createdAt), 'dd-MM-yyyy')} </h2>
                                     <h3 className="text-sm text-gray-500">{place.title}</h3>
                                     <div className="mt-1">
                                         <span className="font-bold">${place.price}</span>/{t('per night')}

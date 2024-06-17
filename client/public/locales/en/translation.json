@@ -42,5 +42,11 @@
     "logout": "Logout",
     "PLEASE SELECT GENDER": "PLEASE SELECT GENDER",
     "female": "Female",
-    "male": "Male"
+    "male": "Male",
+    "login": "Login",
+    "register now": "Register now",
+    "do not have an account yet?": "Don't have an account yet?",
+    "forgot Password": "Forgot Password?",
+    "click here": "Click here",
+    "created at": "Created at"
 }

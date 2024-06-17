@@ -52,6 +52,7 @@ const bookingSchema = new mongoose.Schema({
     price: Number
 });
 
+
 const BookingModel = mongoose.model('Booking', bookingSchema);
 
 module.exports = BookingModel;

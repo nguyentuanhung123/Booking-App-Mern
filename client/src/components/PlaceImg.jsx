@@ -6,7 +6,7 @@ const PlaceImg = ({place, index=0, className}) => {
     }
 
     if(!className){
-        className = 'object-cover'
+        className = 'object-cover w-full'
     }
 
     return(
